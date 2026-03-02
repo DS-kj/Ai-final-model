@@ -6,24 +6,24 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 # -----------------------------
-# 1️⃣ Load Dataset
+# 1 Load Dataset
 # -----------------------------
 file_path = r"C:\Users\ASUS\Desktop\4 ai\memory_dataset.csv"
 df = pd.read_csv(file_path)
 
 # -----------------------------
-# 2️⃣ Features and Target
+# 2 Features and Target
 # -----------------------------
 X = df.drop("retention_score", axis=1)
 y = df["retention_score"]
 
 # -----------------------------
-# 3️⃣ One-hot encode categorical features
+# 3 One-hot encode categorical features
 # -----------------------------
 X = pd.get_dummies(X, columns=["time_of_day"], drop_first=True)
 
 # -----------------------------
-# 4️⃣ Normalize numerical features
+# 4 Normalize numerical features
 # -----------------------------
 scaler = MinMaxScaler()
 numerical_cols = ["study_duration", "time_since_revision", "spacing_interval", 
@@ -32,20 +32,20 @@ numerical_cols = ["study_duration", "time_since_revision", "spacing_interval",
 X[numerical_cols] = scaler.fit_transform(X[numerical_cols])
 
 # -----------------------------
-# 5️⃣ Train-Test Split
+# 5 Train-Test Split
 # -----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
 # -----------------------------
-# 6️⃣ Train Model (Linear Regression)
+# 6 Train Model (Linear Regression)
 # -----------------------------
 model = LinearRegression()
 model.fit(X_train, y_train)
 
 # -----------------------------
-# 7️⃣ Predictions
+# 7 Predictions
 # -----------------------------
 y_pred = model.predict(X_test)
 
@@ -58,7 +58,7 @@ print(f"RMSE: {rmse:.2f}")
 print(f"R^2 Score: {r2:.2f}")
 
 # -----------------------------
-# 9️⃣ Example Prediction for a New Student
+# 9 Example Prediction for a New Student
 # -----------------------------
 new_student = pd.DataFrame({
     "study_duration": [60],
@@ -90,32 +90,32 @@ t = 0
 current_retention = predicted_retention
 revision_times = []
 
-# Simulate decay over next 7 days (168 hours)
+spacing_interval_hours = new_student["spacing_interval"].iloc[0]
+
+# Simulate memory decay over next 7 days (168 hours)
 while t <= 168:
     hours_since_last_revision = t - revision_times[-1] if revision_times else t
     retention = current_retention * np.exp(-hours_since_last_revision / 72)  # forgetting curve
-    
+
     if retention < threshold:
         revision_times.append(t)
         current_retention = predicted_retention  # reset retention after revision
-    
-    step = new_student["spacing_interval"].iloc[0] if new_student["spacing_interval"].iloc[0] > 0 else 1
-    t += step
+
+    t += spacing_interval_hours if spacing_interval_hours > 0 else 1
 
 # -----------------------------
 # Output Revision Info
 # -----------------------------
-first_time = new_student["previous_retention"].iloc[0] == 0 and new_student["time_since_revision"].iloc[0] == 0
-
-if first_time:
-    if revision_times:
-        first_rev = revision_times[0]
-        days = first_rev // 24
-        hours = first_rev % 24
-        print(f"\nFirst revision is recommended after {days} day(s) and {hours} hour(s).")
+if revision_times:
+    first_rev = revision_times[0]
+    days = first_rev // 24
+    hours = first_rev % 24
+    if first_rev == 0:
+        print("\nRevision is immediately recommended.")
     else:
-        print("\nNo revision needed in the next 7 days.")
+        print(f"\nOptimal time for revision is after {days} day(s) and {hours} hour(s).")
 else:
+    print("\nNo revision needed in the next 7 days.")
     if revision_times:
         first_rev = revision_times[0]
         if first_rev == 0:
@@ -130,8 +130,6 @@ else:
         from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 
-# Assume y_test = actual retention scores
-#       y_pred = predicted retention scores from Linear Regression
 
 # Root Mean Squared Error (RMSE)
 mse = mean_squared_error(y_test, y_pred)  # Mean Squared Error

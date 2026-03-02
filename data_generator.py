@@ -3,41 +3,38 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# -----------------------------
+
 # Parameters
-# -----------------------------
-np.random.seed(42)      # reproducibility
-n_samples = 20     # number of study sessions to simulate
+np.random.seed(42)      
+n_samples = 20     
 
-# -----------------------------
 # Feature Generation
-# -----------------------------
 
-# 1. Study duration (minutes) – normal distribution, realistic study times
+# 1. Study duration (minutes) 
 study_duration = np.clip(np.random.normal(loc=60, scale=20, size=n_samples), 10, 120)
 
-# 2. Number of repetitions – discrete 1–6, realistic probabilities
+# 2. Number of repetitions 
 repetitions = np.random.choice([1,2,3,4,5,6], size=n_samples, p=[0.2,0.25,0.2,0.15,0.12,0.08])
 
-# 3. Time since last revision (hours) – exponential decay to mimic forgetting
+# 3. Time since last revision (hours)
 time_since_revision = np.clip(np.random.exponential(scale=24, size=n_samples), 1, 168)
 
-# 4. Spacing interval (hours) – normal distribution, realistic spacing
+# 4. Spacing interval (hours) 
 spacing_interval = np.clip(np.random.normal(loc=18, scale=10, size=n_samples), 1, 72)
 
-# 5. Focus level (0–1) – beta distribution for realistic concentration levels
+# 5. Focus level (0–1) –
 focus_level = np.clip(np.random.beta(a=5, b=2, size=n_samples), 0.2, 1.0)
 
-# 6. Sleep quality (0–1) – normal distribution, reasonable mean
+# 6. Sleep quality (0–1) 
 sleep_quality = np.clip(np.random.normal(loc=0.7, scale=0.15, size=n_samples), 0.3, 1.0)
 
-# 7. Time of day studied – 0=morning, 1=afternoon, 2=night
+# 7. Time of day studied 
 time_of_day = np.random.choice([0,1,2], size=n_samples, p=[0.35,0.4,0.25])
 
-# 8. Days since first learning – gamma distribution to simulate learning history
+# 8. Days since first learning
 days_since_first_learning = np.clip(np.random.gamma(shape=2, scale=10, size=n_samples), 1, 180)
 
-# 9. Previous retention score (%) – realistic memory history
+# 9. Previous retention score (%)
 previous_retention = np.clip(np.random.normal(loc=0.65, scale=0.15, size=n_samples), 0.2, 0.95)
 
 # -----------------------------
