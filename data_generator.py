@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 # Parameters
-np.random.seed(42)      
+np.random.seed(42)     
 n_samples = 20     
 
 # Feature Generation

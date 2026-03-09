@@ -85,6 +85,7 @@ print(f"\nPredicted retention for new student: {predicted_retention:.2f}%")
 # -----------------------------
 # Schedule Revision (Threshold = 60%)
 # -----------------------------
+
 threshold = 60
 t = 0
 current_retention = predicted_retention
